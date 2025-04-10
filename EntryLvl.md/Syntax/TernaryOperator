@@ -1,0 +1,146 @@
+using System.Data;
+using System.Runtime.CompilerServices;
+using System.Security.Principal;
+namespace TernaryOperator
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+
+            //NULL Handling:
+
+            //null bedeutet nichts
+            int? i = null; // wir haben mit int? einen Nullable integer das bedeutet das dieser integer möglicherweise null sein kann
+            System.Console.WriteLine(i);
+            //null bedeutet das wenn wir eine variable im Arbeitspeicher keinen wert zuweisen
+            //oben haben wir einen int32, das bedeutet das zur Laufzeit 32 bit im arbeitspeicher belegt sind. 
+            //diese 32bit werden aber nicht verwendet.
+            //vor der definition oder wertzuweisung ist eine variabel zwangsläufig null.
+            // mit der zuweisung von = null entfernen wir zb. bestehende werte, unsere speicherreservierung bleibt aber aktiv.
+
+            int? y = 25;
+            System.Console.WriteLine(y);//25
+            y = null;
+            System.Console.WriteLine(y);
+
+            //nehmen wir an wir würden über eine Abfrage im Internet machen und würden Wetter daten erwarten in form von strings
+            //Wegen eines Fehler 404 kommen keine Daten an unser Programm speichert also null in die vorgesehenen variabeln
+            //wenn wir später diese Daten formatieren (Umwandlung in anderen Datentyp oder damit rechnen, dann würde unser Programm abstürzen)
+
+            string? meineDaten = null; // Meine Empfangenen Daten
+
+            //System.Console.WriteLine(meineDaten.Trim());//Formatierung der Textdaten durch entfernung von Leerzeichen
+            //Unser Programm stürtzt ab
+
+
+            //Mögliches Nullable handling
+
+            //1
+            string handling1;
+            if (meineDaten != null)
+            {
+                handling1 = meineDaten;
+            }
+            else
+            {
+                handling1 = "Daten Fehlerhaft";
+            }
+
+            System.Console.WriteLine(handling1);
+
+
+            //2
+            string handling2 = meineDaten ?? "Daten Fehlerhaft"; // Wenn meineDaten = null sind dann schreibe hier "Daten fehlerhaft
+            System.Console.WriteLine(handling2); // Ausgabe Daten Fehlerhaft
+
+            //3
+            meineDaten = "Das sind meine Daten";
+            System.Console.WriteLine(meineDaten?.Length); //Wenn meineDaten == null ist  dann führe Length hier nicht aus sondern gebe einfach null zurück 
+
+            if (meineDaten?.Length == null) System.Console.WriteLine("Das Ergebnis ist null");
+
+
+            //Verzweigungen sind Wahheitsabfragen gefolgt von auszuführendem Code.
+
+            //if(bedingung) Aktion
+            //else if(alternative bedingung) Aktion (Diese wird nur aufgerufen wenn vorherige Wahrheitsabfragen nicht zutreffen)
+            //else Aktion (Diese unabhängig von einer Bedingung wird aufgerufen wenn alle vorherigen abfragen scheitern)
+
+            //Kontrollstruktur mit if else
+
+  
+
+            if (true != false)
+            {
+                System.Console.WriteLine("Wahr ist nicht falsch");
+            }
+            else if (false) System.Console.WriteLine("Wird niemals aufgerufen"); // Wenn es nur eine einzige Aktion gibt können wir in einer Zeile mit der Bedingung schreiben
+            else System.Console.WriteLine("Wird niemals aufgerufen");
+
+            //Kontrollstruktur mit switch case
+
+            string wochentag = "Donnerstag";
+
+            switch (wochentag)
+            {
+                case string x when wochentag == "Donnerstag" || wochentag == "Freitag": //when erlaubt es uns zusätzliche logik in einem switch case anzuwenden
+                                                                                        //string x ist hier notwendig um diese als platzhalter variabel zu verwenden
+                case "Freitag": //Fall 1
+                case "Dienstag": //fall 2 -> veraltete Schreibweise
+                    System.Console.WriteLine("Option 1 triff zu");
+                    break; // Ende der Aktion
+
+                case "Freitag" or "Donnerstag" or "Montag": //Fall 3 , 4 , 5
+                    System.Console.WriteLine("Option 2 trifft zu");
+                    break;
+
+                default:
+                    System.Console.WriteLine("nichts von all dem trifft zu");
+                    break;
+            }
+
+            //Tenäre operatoren
+
+            //wir wollen prüfen ob eine Bedingung true oder false zurückgibt 
+            //Tenäre Operatoren sind genaugenommen keine Verzweigungen, da sie keine unterschiedlichen aktionspfade liefern sondern einen Rückgabewert
+
+            string farbe = "rot";
+
+            bool abfrage = farbe == "rot" ? true : false; // hier prüft er ob der string gleich "rot" ist wenn ja ist die rückgabe true und wenn nicht false
+            System.Console.WriteLine(abfrage); // ausgabe true
+
+
+            //Im grunde können wir anstelle von true oder false auch werte platzieren vorausgesetzt die werte stimmen mit dem Datentyp über ein oder
+            //Funktionen wie Console.Readline() => Rückage Nullable-string oder "text".Length => Rückgabe int usw ... 
+            //Im Grunde jede funktion die nicht void zurückgibt (void bedeutet keine Rückgabe, also keinen Wert der gespeichert werden kann)
+            //Console.WriteLine() ist zum  Beispiel void bedeutet wir können folgendes nicht tun:
+            //string text = Console.WriteLine()
+
+            //Beispielfür Funktion mit Tenären Operatoren:
+
+            string? meinCoolerText = farbe == "grün" ? "Die Farbe ist grün" : Console.ReadLine(); //Console.ReadLine gibt einen Nullable-string zurück der in meinCoolerText
+                                                                                                  //gespeichert wird
+            System.Console.WriteLine("die Farbe ist " + meinCoolerText);
+
+
+            //Tenäre operationen lassen sich auch verschachteln:
+
+            farbe = "blau";
+            meinCoolerText = farbe == "blau" ? "die Farbe ist blau" : //Wir prüfen hier ist farbe blau, wenn das stimmt dann bekommt meinCoolertext den string "blau" zugewiesen ansonsten
+                            farbe == "grün" ? "die Farbe ist grün" : //prüfen wir ob farbe "grün" ist, wenn das stimm bekommt meinCoolerText den string "grün" zugewiesen ansonsten
+                            farbe == "rot" ? "die Farbe ist rot" : "Keine Ahnung was das für eine Farbe ist"; //prüfen wir ob farbe rot ist und würden rot zurückgeben wenn das stimmt
+                                                                                                              //ansonsten weisen wir den String "Keine Ahnung was das für eine farbe ist" meinCoolerText zu.
+
+
+            //Beim resultat nach dem fragezeichen ist Links immer die Rückgaebe für true und rechts die Rückgabe für false.
+
+            System.Console.WriteLine(meinCoolerText);
+            //Das funktioniert weil Tenäre Operationen einen Rückgabewert erzeugen und alles was ein Rückagebwert erzeugt kann wiederum in einem Terämen Operator
+            //verwendet werden.
+
+
+
+        }
+    }
+}
